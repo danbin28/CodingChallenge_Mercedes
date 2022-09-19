@@ -2,9 +2,11 @@
 #include "test.h"
 #include <string>
 #include <iostream>
+#include <vector>
 #include <fstream>
 #include <cstdlib>
-#include "tarball.h"
+#include <msclr/marshal_cppstd.h>
+
 
 using namespace System;
 using namespace System::IO;
@@ -18,12 +20,15 @@ public:
         // Create variables 
         System::String^ userinput;
         System::String^ path;
+        std::vector<System::String^> files;
 
         // Set default filter for filenames
         System::String^ filter = "core*.lz4";
        
-        // Wait for user Input for the path to watch
-        path = DataCollector::init();
+        // Wait for user Input for the path and the data which should be collected
+        path = DataCollector::initPath();
+        files = DataCollector::initData();
+        DataCollector::createDriveInfoFile();
 
         // Create FileSystemWatcher fot the trigger function on Windows
         FileSystemWatcher^ watcher = gcnew FileSystemWatcher(path);
@@ -57,10 +62,27 @@ public:
 
 private:
 
-    static System::String^ DataCollector::init()
+    static System::String^ DataCollector::initPath()
     {
         Console::WriteLine("Please insert the new directory to monitor. It has to be in the format: D:\\Example\\Folder\\Test");
         return(Console::ReadLine());
+    }
+
+    static std::vector<System::String^> DataCollector::initData()
+    {
+        System::String^ data_path;
+        std::vector<System::String^> data;
+
+        Console::WriteLine("Please insert the directory or the file you want to save");
+        data_path = Console::ReadLine();
+
+        do {
+            data.push_back(data_path);
+            Console::WriteLine("Please insert the additional directory or the file you want to save or e for exit");
+            data_path = Console::ReadLine();
+        } while (Console::ReadLine() != "e");
+        
+        return data;
     }
 
     static void DataCollector::changeTriggerPath(FileSystemWatcher^ watcher)
@@ -105,12 +127,14 @@ private:
         }
         Console::WriteLine("Changed: {0}", e->FullPath);
         Console::WriteLine("Collecting data...");
+        DataCollector::createDriveInfoFile();
     }
 
     static void DataCollector::OnCreated(Object^ sender, FileSystemEventArgs^ e)
     {
         Console::WriteLine("Created: {0}", e->FullPath);
         Console::WriteLine("Collecting data...");
+        DataCollector::createDriveInfoFile();
     }
 
 
@@ -120,6 +144,27 @@ private:
         Console::WriteLine("    Old: {0}", e->OldFullPath);
         Console::WriteLine("    New: {0}", e->FullPath);
         Console::WriteLine("Collecting data...");
+        DataCollector::createDriveInfoFile();
+    }
+
+    static void DataCollector::createDriveInfoFile()
+    {
+        std::ofstream fs;
+        fs.open("D:\\Binder\\Documents\\Privat\\Bewerbungen\\Coding Tests\\MercedesCodingChallenge\\Github\\DataCollectorTest\\TestFiles\\DiskUsage.txt", std::ofstream::out | std::ofstream::trunc);
+        
+        if (!fs)
+        {
+            Console::WriteLine("Cannot open the output file.");
+        }
+
+        DriveInfo^ drive = gcnew DriveInfo("D");
+
+        // msclr::interop::marshal_as<std::string> converts System::String to std::string
+        fs << "Disk usage information of: " << msclr::interop::marshal_as<std::string>(drive->Name) << std::endl;
+        fs << "Available free Space: " << drive->AvailableFreeSpace << " Bytes" << std::endl;
+        fs << "Disk usage Format: " << msclr::interop::marshal_as<std::string>(drive->DriveFormat) << std::endl;
+        fs << "Disk usage Type: " << msclr::interop::marshal_as<std::string>(drive->DriveType) << std::endl;
+        fs.close();
     }
 
     /*
