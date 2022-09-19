@@ -1,11 +1,12 @@
 #include "pch.h"
-//#include "test.h"
+//#include "DataCollector.h"
 #include <string>
 #include <iostream>
 //#include <vector>
 #include <fstream>
 #include <cstdlib>
 #include <msclr/marshal_cppstd.h>
+//#include <gtest/gtest.h>
 
 
 using namespace System;
@@ -190,10 +191,14 @@ private:
 };
 
 
-int main()
+int main(int argc, char** argv)
 {
     
+    //::testing::InitGoogleTest(&argc, argv);
+
     DataCollector::Run();
+
+    //return RUN_ALL_TESTS();
 
     return 0;
 }
