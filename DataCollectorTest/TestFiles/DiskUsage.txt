@@ -1,0 +1,3 @@
+Disk usage information of: D:\
+Available free Space: 516341383168 Bytes
+Disk usage Format: NTFS

@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "test.h"
+//#include "test.h"
 #include <string>
 #include <iostream>
-#include <vector>
+//#include <vector>
 #include <fstream>
 #include <cstdlib>
 #include <msclr/marshal_cppstd.h>
@@ -20,14 +20,14 @@ public:
         // Create variables 
         System::String^ userinput;
         System::String^ path;
-        std::vector<System::String^> files;
+        //std::vector<System::String^> files;
 
         // Set default filter for filenames
         System::String^ filter = "core*.lz4";
        
         // Wait for user Input for the path and the data which should be collected
         path = DataCollector::initPath();
-        files = DataCollector::initData();
+        //files = DataCollector::initData();
         DataCollector::createDriveInfoFile();
 
         // Create FileSystemWatcher fot the trigger function on Windows
@@ -68,6 +68,7 @@ private:
         return(Console::ReadLine());
     }
 
+    /*
     static std::vector<System::String^> DataCollector::initData()
     {
         System::String^ data_path;
@@ -84,6 +85,7 @@ private:
         
         return data;
     }
+    */
 
     static void DataCollector::changeTriggerPath(FileSystemWatcher^ watcher)
     {
@@ -160,10 +162,11 @@ private:
         DriveInfo^ drive = gcnew DriveInfo("D");
 
         // msclr::interop::marshal_as<std::string> converts System::String to std::string
+        
         fs << "Disk usage information of: " << msclr::interop::marshal_as<std::string>(drive->Name) << std::endl;
         fs << "Available free Space: " << drive->AvailableFreeSpace << " Bytes" << std::endl;
         fs << "Disk usage Format: " << msclr::interop::marshal_as<std::string>(drive->DriveFormat) << std::endl;
-        fs << "Disk usage Type: " << msclr::interop::marshal_as<std::string>(drive->DriveType) << std::endl;
+        //fs << "Disk usage Type: " << msclr::interop::marshal_as<std::string>(drive->DriveType) << std::endl;
         fs.close();
     }
 
