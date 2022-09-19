@@ -122,6 +122,7 @@ private:
         Console::WriteLine("Collecting data...");
     }
 
+    /*
     static void DataCollector::createTar(std::string filename)
     {
         std::fstream out(filename, std::ios::out);
@@ -129,7 +130,7 @@ private:
         {
             Console::WriteLine("Cannot open out tar File");
         }
-        /* create the tar file */
+        // create the tar file
         lindenb::io::Tar tarball(out);
     }
 
@@ -137,6 +138,7 @@ private:
     {
         tarball.put("myfiles/item1.txt", "Hello World 1\n");
     }
+    */
 };
 
 
